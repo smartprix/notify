@@ -42,9 +42,9 @@ function getSlackConf() {
 }
 
 /**
- * @returns {attach}
+ * @returns {attach[]}
  */
-function getDefaultAttachment() {
+function getDefaultAttachments() {
 	const {name, version} = getPackageInfo();
 	const fields = [
 		{
@@ -72,9 +72,9 @@ function getDefaultAttachment() {
 		});
 	}
 
-	return {
+	return [{
 		fields,
-	};
+	}];
 }
 
 class Slack {
@@ -118,7 +118,7 @@ class Slack {
 	 */
 	attachment(attachments) {
 		if (!Array.isArray(attachments)) attachments = [attachments];
-		this._attachments.concat(attachments);
+		this._attachments = this._attachments.concat(attachments);
 		return this;
 	}
 
@@ -229,12 +229,12 @@ class Slack {
 		attachments = [],
 		extraProps = {},
 	} = {}) {
-		attachments.push(getDefaultAttachment());
+		const finalAttachments = attachments.concat(getDefaultAttachments());
 		const message = Object.assign(extraProps, {
 			text,
 			channel,
 			username: this.username,
-			attachments: JSON.stringify(attachments),
+			attachments: JSON.stringify(finalAttachments),
 		});
 
 		if (this.logCondition()) {
