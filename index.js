@@ -17,6 +17,22 @@ function getPackageInfo() {
 	return packageObj;
 }
 
+/** @type {Console} */
+let logger;
+function getLogger() {
+	if (logger) return logger;
+	try {
+		// Try using oak
+		// @ts-ignore
+		const {Oak} = require('@smpx/oak');
+		logger = new Oak('Slack');
+	}
+	catch (err) {
+		logger = console;
+	}
+	return logger;
+}
+
 function getSlackConf() {
 	return cfg('slack', {
 		token: '',
@@ -62,9 +78,6 @@ function getDefaultAttachment() {
 }
 
 class Slack {
-	static get logger() {
-		return console;
-	} 
 	/**
 	 * Overwrite this function to skip slack message sending in some cnditions
 	 * and log the message instead. By default skips in test environment
@@ -166,31 +179,40 @@ class Slack {
 	 * @param {object} message 
 	 */
 	static async _postWithToken(message) {
-		message.token = getSlackConf().token;
 		try {
-			const connect = Connect.url('https://slack.com/api/chat.postMessage');
-			const res = await connect.fields(message).post();
+			const connect = Connect
+				.url('https://slack.com/api/chat.postMessage')
+				.fields(message)
+				.field('token', getSlackConf().token)
+				.post();
+
+			const res = await connect.fetch();
+
 			const parsedBody = JSON.parse(res.body);
 			if (parsedBody.error) {
-				this.logger.error({label: 'Slack'}, message, parsedBody);
+				getLogger().error(message, parsedBody);
 			}
 		}
 		catch (err) {
-			this.logger.error({label: 'Slack'}, message, err);
+			getLogger().error(message, err);
 		}
 	}
 
 	static async _postWithWebhook(message) {
 		try {
-			const connect = Connect.url(getSlackConf().webhook);
-			const res = await connect.fields(message).post();
+			const connect = Connect
+				.url(getSlackConf().webhook)
+				.fields(message)
+				.post();
+
+			const res = await connect.fetch();
 			const parsedBody = JSON.parse(res.body);
 			if (parsedBody.error) {
-				this.logger.error({label: 'Slack'}, message, parsedBody);
+				getLogger().error(message, parsedBody);
 			}
 		}
 		catch (err) {
-			this.logger.error({label: 'Slack'}, message, err);
+			getLogger().error(message, err);
 		}
 	}
 
@@ -216,7 +238,7 @@ class Slack {
 		});
 
 		if (this.logCondition()) {
-			this.logger.info({label: 'Slack', ...message}, 'Slack message');
+			getLogger().info({label: 'Slack', ...message}, 'Slack message');
 			return;
 		}
 

@@ -57,7 +57,6 @@ declare module '@smpx/slack' {
 	}
 
 	class Slack {
-		static logger: Console;
 		/**
 		 * Overwrite this function to skip slack message sending in some cnditions
 		 * and log the message instead. By default skips in test environment
