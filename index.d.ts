@@ -1,61 +1,61 @@
-declare module '@smpx/slack' {
-	/**
-	 * Taken from @slack/client
-	 */
-	interface MessageAttachment {
-		fallback?: string;
-		color?: 'good' | 'warning' | 'danger' | string;
-		pretext?: string;
-		author_name?: string;
-		author_link?: string;
-		author_icon?: string;
-		title?: string;
-		title_link?: string;
-		text?: string;
-		fields?: {
-			title: string;
-			value: string;
-			short?: boolean;
-		}[];
-		image_url?: string;
-		thumb_url?: string;
-		footer?: string;
-		footer_icon?: string;
-		ts?: string;
-		actions?: AttachmentAction[];
-		callback_id?: string;
-		mrkdwn_in?: ('pretext' | 'text' | 'fields')[];
-	}
-	interface AttachmentAction {
-		id?: string;
-		confirm?: Confirmation;
-		data_source?: string;
-		min_query_length?: number;
-		name?: string;
-		options?: OptionField[];
-		option_groups?: {
-			text: string;
-			options: OptionField[];
-		}[];
-		selected_options?: OptionField[];
-		style?: string;
-		text: string;
-		type: string;
-		value?: string;
-		url?: string;
-	}
-	interface OptionField {
-		description?: string;
-		text: string;
+/**
+ * Taken from @slack/client
+ */
+interface MessageAttachment {
+	fallback?: string;
+	color?: 'good' | 'warning' | 'danger' | string;
+	pretext?: string;
+	author_name?: string;
+	author_link?: string;
+	author_icon?: string;
+	title?: string;
+	title_link?: string;
+	text?: string;
+	fields?: {
+		title: string;
 		value: string;
-	}
-	interface Confirmation {
-		dismiss_text?: string;
-		ok_text?: string;
+		short?: boolean;
+	}[];
+	image_url?: string;
+	thumb_url?: string;
+	footer?: string;
+	footer_icon?: string;
+	ts?: string;
+	actions?: AttachmentAction[];
+	callback_id?: string;
+	mrkdwn_in?: ('pretext' | 'text' | 'fields')[];
+}
+interface AttachmentAction {
+	id?: string;
+	confirm?: Confirmation;
+	data_source?: string;
+	min_query_length?: number;
+	name?: string;
+	options?: OptionField[];
+	option_groups?: {
 		text: string;
-		title?: string;
-	}
+		options: OptionField[];
+	}[];
+	selected_options?: OptionField[];
+	style?: string;
+	text: string;
+	type: string;
+	value?: string;
+	url?: string;
+}
+interface OptionField {
+	description?: string;
+	text: string;
+	value: string;
+}
+interface Confirmation {
+	dismiss_text?: string;
+	ok_text?: string;
+	text: string;
+	title?: string;
+}
 
+declare module '@smpx/slack' {
 	class Slack {
 		/**
 		 * Overwrite this function to skip slack message sending in some cnditions
@@ -78,7 +78,7 @@ declare module '@smpx/slack' {
 		icon(linkOrEmail: string): this;
 		send(): Promise<void>;
 
-		postMessage(text: string, opts?: {
+		static postMessage(text: string, opts?: {
 			channel?: string;
 			attachments?: MessageAttachment[],
 			extraProps?: object,
@@ -106,10 +106,10 @@ declare module '@smpx/slack' {
 		static setToken(token: string);
 	}
 
-	export default Slack;
-
-	export {
-		MessageAttachment,
-		Slack,
-	}
+	// This gives error but works
+	export = Slack;
 }
+
+export {
+	MessageAttachment,
+};

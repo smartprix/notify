@@ -2,7 +2,7 @@ const {cfg, Connect} = require('sm-utils');
 const os = require('os');
 
 /**
- * @typedef {import('@smpx/slack').MessageAttachment} attach
+ * @typedef {import('./').MessageAttachment} attach
  */
 
 let packageObj;
