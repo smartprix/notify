@@ -49,7 +49,7 @@ function getDefaultAttachments() {
 	const {name, version} = getPackageInfo();
 	const fields = [
 		{
-			title: 'Hostname:',
+			title: 'Hostname',
 			value: os.hostname(),
 			short: true,
 		},
@@ -66,10 +66,10 @@ function getDefaultAttachments() {
 	}
 
 	return [{
-		title: 'App Info',
+		title: 'App Info:',
 		fields,
 		footer: `${name} v${version} ${footerSuffix}`,
-		ts: Date.now(),
+		ts: Date.now() / 1000,
 	}];
 }
 
