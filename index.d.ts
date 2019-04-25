@@ -20,7 +20,7 @@ interface MessageAttachment {
 	thumb_url?: string;
 	footer?: string;
 	footer_icon?: string;
-	ts?: string;
+	ts?: number;
 	actions?: AttachmentAction[];
 	callback_id?: string;
 	mrkdwn_in?: ('pretext' | 'text' | 'fields')[];
@@ -74,7 +74,10 @@ declare module '@smpx/slack' {
 		/**
 		 * Add an attachment with stats as fields
 		 */
-		stats(title: string, statsKeyValue: {[statTitle: string]: string | number | boolean | object}): this;
+		stats(
+			title: string,
+			statsKeyValue: {[statTitle: string]: string | number | boolean | object},
+			extraProps?: Partial<MessageAttachment>): this;
 		/**
 		 * Add an error as an attachement to the slack message
 		 */
@@ -119,4 +122,5 @@ declare module '@smpx/slack' {
 
 export {
 	MessageAttachment,
+	AttachmentAction,
 };

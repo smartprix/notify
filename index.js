@@ -157,14 +157,17 @@ class Slack {
 	 * Add an attachment with stats as fields
 	 * @param {string} title
 	 * @param {{[key: string]: string}} keyValues
+	 * @param {Partial<attach>} extraProps
 	 */
-	stats(title, keyValues) {
+	stats(title, keyValues, extraProps = {}) {
 		/** @type {attach} */
-		const attachment = {
+		const attachment = Object.assign({
+			color: '#439FE0', // blue
+		}, extraProps, {
 			fallback: title,
 			title,
 			fields: [],
-		};
+		});
 
 		Object.keys(keyValues).forEach((key) => {
 			let value = keyValues[key];
