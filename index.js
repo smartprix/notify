@@ -53,27 +53,22 @@ function getDefaultAttachments() {
 			short: true,
 		},
 		{
-			title: 'App: ',
-			value: `${name} v${version}`,
-			short: true,
-		},
-		{
 			title: 'Node Environment',
 			value: cfg.getEnv(),
 			short: true,
 		},
 	];
 
+	let footerSuffix = '';
 	if (process.env.name || process.env.pm_id) {
-		fields.push({
-			title: 'PM2 App',
-			value: `${process.env.name} ${process.env.pm_id || -1}`,
-			short: true,
-		});
+		footerSuffix = `| ${process.env.name} ${process.env.pm_id || -1}` 
 	}
 
 	return [{
+		title: 'App Info',
 		fields,
+		footer: `${name} v${version} ${footerSuffix}`,
+		ts: Date.now(),
 	}];
 }
 
