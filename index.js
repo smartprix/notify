@@ -123,6 +123,7 @@ class Slack {
 	}
 
 	/**
+	 * Add an error as an attachement to the slack message
 	 * @param {Error} err
 	 * @param {{label?: string}} [param1={}]
 	 */
@@ -150,6 +151,35 @@ class Slack {
 				}&labels=bug`,
 			}];
 		}
+
+		return this.attachment(attachment);
+	}
+
+	/** 
+	 * Add an attachment with stats as fields
+	 * @param {string} title
+	 * @param {{[key: string]: string}} keyValues
+	 */
+	stats(title, keyValues) {
+		/** @type {attach} */
+		const attachment = {
+			title,
+			fields: [],
+		};
+
+		Object.keys(keyValues).forEach((key) => {
+			let value = keyValues[key];
+			
+			if (['boolean', 'number'].includes(typeof value)) value = String(value);
+			else if (typeof value !== 'string') value = JSON.stringify(value);
+			value = value.trim();
+
+			attachment.fields.push({
+				title: key.trim(),
+				value,
+				short: value.length <= 30 && key.length <= 30,
+			})
+		})
 
 		return this.attachment(attachment);
 	}

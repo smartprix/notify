@@ -71,11 +71,18 @@ declare module '@smpx/slack' {
 		text(text: string): this;
 		channel(channelName: string): this;
 		attachment(attachments: MessageAttachment | MessageAttachment[]): this;
+		/**
+		 * Add an attachment with stats as fields
+		 */
+		stats(title: string, statsKeyValue: {[statTitle: string]: string | number | boolean | object}): this;
+		/**
+		 * Add an error as an attachement to the slack message
+		 */
 		error(err: Error, opts?: {label?: string}): this;
 		/**
 		 * @param linkOrEmoji Url of image to use as icon or string for emoji
 		 */
-		icon(linkOrEmail: string): this;
+		icon(linkOrEmoji: string): this;
 		send(): Promise<void>;
 
 		static postMessage(text: string, opts?: {
