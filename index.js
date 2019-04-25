@@ -134,8 +134,8 @@ class Slack {
 
 		/** @type {attach} */
 		const attachment = {
-			pretext: `${Slack.format('Error')}: ${err.message}`,
-			text: err.stack,
+			pretext: Slack.escapeText(`${Slack.format('Error')}: ${err.message}`),
+			text: Slack.escapeText(err.stack),
 			color: 'danger',
 		};
 
@@ -307,6 +307,21 @@ class Slack {
 	 */
 	static formatUrl(url, text) {
 		return `<${url}|${text}>`;
+	}
+
+	/**
+	 * @see https://api.slack.com/docs/message-formatting#how_to_escape_characters
+	 * @param {string} text
+	 */
+	static escapeText(text) {
+		return text.replace(/([&<>])/g, (match, g1) => {
+			switch(g1) {
+				case '<': return '&lt;';
+				case '>': return '&gt;';
+				case '&': return '&amp;';
+				default: return g1;
+			}
+		});
 	}
 
 	/**
