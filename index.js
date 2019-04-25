@@ -3,6 +3,7 @@ const os = require('os');
 
 /**
  * @typedef {import('./').MessageAttachment} attach
+ * @typedef {import('./').AttachmentAction} action
  */
 
 let packageObj;
@@ -91,6 +92,8 @@ class Slack {
 		/** @type {attach[]} */
 		this._attachments = [];
 		this._errors = [];
+		/** @type {action[]} */
+		this._actions = [];
 		this._extraProps = {};
 
 		if (channel) this.channel(channel);
@@ -141,6 +144,7 @@ class Slack {
 			attachment.actions = [{
 				type: 'button',
 				text: 'Create an issue for this error?',
+				style: 'danger',
 				url: `${bugsUrl}/new?title=${
 						encodeURIComponent(`${label}${title || err.message}`)
 					}&body=${encodeURIComponent(
@@ -197,7 +201,30 @@ class Slack {
 		return this;
 	}
 
+	/** 
+	 * @param {string} text
+	 * @param {string} url
+	 * @param {{style?: string}} [param2]
+	 */
+	button(text, url, {style = ''} = {}) {
+		/** @type {action} */
+		const button = {
+			type: 'button',
+			text,
+			url,
+		};
+		if (style) button.style = style;
+		this._actions.push(button);
+		return this;
+	}
+
 	async send() {
+		if (this._actions.length) {
+			this.attachment({
+				actions: this._actions,
+			});
+		}
+
 		return Slack
 			.postMessage(this._text, {
 				channel: this._channel,

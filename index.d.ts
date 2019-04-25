@@ -77,15 +77,19 @@ declare module '@smpx/slack' {
 		stats(
 			title: string,
 			statsKeyValue: {[statTitle: string]: string | number | boolean | object},
-			extraProps?: Partial<MessageAttachment>): this;
+			extraProps?: Partial<MessageAttachment>
+		): this;
 		/**
 		 * Add an error as an attachement to the slack message
+		 * Also automatically adds a button to create issue on  github
+		 * if a `bugs.url` property exists in package.json 
 		 */
 		error(err: Error, opts?: {label?: string, title?: string}): this;
 		/**
 		 * @param linkOrEmoji Url of image to use as icon or string for emoji
 		 */
 		icon(linkOrEmoji: string): this;
+		button(text: string, url: string, opts?: {style?: string}): this;
 		send(): Promise<void>;
 
 		static postMessage(text: string, opts?: {
