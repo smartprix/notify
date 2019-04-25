@@ -12,7 +12,7 @@ function getPackageInfo() {
 		packageObj = require(`${process.cwd()}/package.json`);
 	}
 	catch(err) {
-		packageObj = {name: 'Unknown'};
+		packageObj = {name: 'Unknown', version: '0.0.0'};
 	}
 	return packageObj;
 }
@@ -125,11 +125,11 @@ class Slack {
 	/**
 	 * Add an error as an attachement to the slack message
 	 * @param {Error} err
-	 * @param {{label?: string}} [param1={}]
+	 * @param {{label?: string, title?: string}} [param1={}]
 	 */
-	error(err, {label = ''} = {}) {
+	error(err, {label = '', title = ''} = {}) {
 		this._errors.push(err);
-		const {bugs} = getPackageInfo();
+		const {bugs, version} = getPackageInfo();
 		const bugsUrl = bugs && bugs.url;
 
 		/** @type {attach} */
@@ -140,18 +140,19 @@ class Slack {
 		};
 
 		if (bugsUrl) {
-			label = label ? `[${label}] ` : '';
+			label = `[${label || err.name}] `;
 			attachment.actions = [{
 				type: 'button',
 				text: 'Create an issue for this error?',
 				url: `${bugsUrl}/new?title=${
-					encodeURIComponent(`${label}${err.message}`)
-				}&body=${
-					encodeURIComponent(`Error was: ${err.stack}`)
-				}&labels=bug`,
+						encodeURIComponent(`${label}${title || err.message}`)
+					}&body=${encodeURIComponent(
+						`Error encountered on ${new Date().toLocaleString()}\n` +
+						`App version: v${version}\n\n` +
+						`Full Stack: ${err.stack}`
+					)}&labels=bug`,
 			}];
 		}
-
 		return this.attachment(attachment);
 	}
 

@@ -78,7 +78,7 @@ declare module '@smpx/slack' {
 		/**
 		 * Add an error as an attachement to the slack message
 		 */
-		error(err: Error, opts?: {label?: string}): this;
+		error(err: Error, opts?: {label?: string, title?: string}): this;
 		/**
 		 * @param linkOrEmoji Url of image to use as icon or string for emoji
 		 */
