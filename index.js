@@ -133,11 +133,13 @@ class Slack {
 		const bugsUrl = bugs && bugs.url;
 
 		/** @type {attach} */
-		const attachment = {
+		const attachment = { 
 			pretext: Slack.escapeText(`${Slack.format('Error')}: ${err.message}`),
 			text: Slack.escapeText(err.stack),
 			color: 'danger',
 		};
+
+		attachment.fallback = attachment.pretext;
 
 		if (bugsUrl) {
 			label = `[${label || err.name}] `;
@@ -164,6 +166,7 @@ class Slack {
 	stats(title, keyValues) {
 		/** @type {attach} */
 		const attachment = {
+			fallback: title,
 			title,
 			fields: [],
 		};
