@@ -1,6 +1,6 @@
 {
   "name": "@smpx/slack",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A slack message builder and sender",
   "main": "index.js",
   "scripts": {
