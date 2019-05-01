@@ -1,5 +1,6 @@
-const {cfg, Connect} = require('sm-utils');
 const os = require('os');
+const {cfg, Connect} = require('sm-utils');
+const startCase = require('lodash.startcase');
 
 /**
  * @typedef {import('./').MessageAttachment} attach
@@ -181,7 +182,7 @@ class Slack {
 			value = value.trim();
 
 			attachment.fields.push({
-				title: key.trim(),
+				title: startCase(key.trim()),
 				value,
 				short: value.length <= 30 && key.length <= 30,
 			})

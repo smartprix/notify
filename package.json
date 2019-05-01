@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/smartprix/slack-utils#readme",
   "dependencies": {
+    "lodash.startcase": "^4.4.0",
     "sm-utils": "^2.17.9"
   }
 }
