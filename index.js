@@ -3,8 +3,8 @@ const {cfg, Connect} = require('sm-utils');
 const startCase = require('lodash.startcase');
 
 /**
- * @typedef {import('./').MessageAttachment} attach
- * @typedef {import('./').AttachmentAction} action
+ * @typedef {import('@smpx/slack').MessageAttachment} attach
+ * @typedef {import('@smpx/slack').AttachmentAction} action
  */
 
 let packageObj;
