@@ -63,7 +63,7 @@ function getDefaultAttachments() {
 
 	let footerSuffix = '';
 	if (process.env.name || process.env.pm_id) {
-		footerSuffix = `| ${process.env.name} ${process.env.pm_id || -1}` 
+		footerSuffix = `| ${process.env.name} ${process.env.pm_id || -1}`
 	}
 
 	return [{
@@ -132,7 +132,7 @@ class Slack {
 		const bugsUrl = bugs && bugs.url;
 
 		/** @type {attach} */
-		const attachment = { 
+		const attachment = {
 			pretext: Slack.escapeText(`${Slack.format('Error')}: ${err.message}`),
 			text: Slack.escapeText(err.stack),
 			color: 'danger',
@@ -158,7 +158,7 @@ class Slack {
 		return this.attachment(attachment);
 	}
 
-	/** 
+	/**
 	 * Add an attachment with stats as fields
 	 * @param {string} title
 	 * @param {{[key: string]: string}} keyValues
@@ -168,15 +168,14 @@ class Slack {
 		/** @type {attach} */
 		const attachment = Object.assign({
 			color: '#439FE0', // blue
-		}, extraProps, {
 			fallback: title,
 			title,
 			fields: [],
-		});
+		}, extraProps);
 
 		Object.keys(keyValues).forEach((key) => {
 			let value = keyValues[key];
-			
+
 			if (['boolean', 'number'].includes(typeof value)) value = String(value);
 			else if (typeof value !== 'string') value = JSON.stringify(value);
 			value = value.trim();
@@ -202,7 +201,7 @@ class Slack {
 		return this;
 	}
 
-	/** 
+	/**
 	 * @param {string} text
 	 * @param {string} url
 	 * @param {{style?: string}} [param2]
@@ -219,24 +218,30 @@ class Slack {
 		return this;
 	}
 
-	async send() {
+	/**
+	 *
+	 * @param {{defaultAttachment?: boolean, extraProps?: object}} param0
+	 */
+	async send({defaultAttachment = true, extraProps = {}} = {}) {
 		if (this._actions.length) {
 			this.attachment({
 				actions: this._actions,
 			});
 		}
 
+		extraProps = Object.assign({}, this._extraProps, extraProps);
 		return Slack
 			.postMessage(this._text, {
 				channel: this._channel,
 				attachments: this._attachments,
-				extraProps: this._extraProps,
+				extraProps,
+				defaultAttachment,
 			});
 	}
 
 	/**
 	 * @private
-	 * @param {object} message 
+	 * @param {object} message
 	 */
 	static async _postWithToken(message) {
 		try {
@@ -282,20 +287,24 @@ class Slack {
 	 * @param {object} [param1={}]
 	 * @param {string} [param1.channel] Default value is taken from config
 	 * @param {attach[]} [param1.attachments=[]] Attachments to send
-	 * @param {object} [param1.extraProps={}]
+	 * @param {object} [param1.extraProps={}] this overwrites any other props
+	 * @param {boolean} [param1.defaultAttachment=true] Add default attachement with system info
 	 */
 	static async postMessage(text, {
 		channel = getSlackConf().channel,
 		attachments = [],
 		extraProps = {},
+		defaultAttachment = true,
 	} = {}) {
-		const finalAttachments = attachments.concat(getDefaultAttachments());
-		const message = Object.assign(extraProps, {
+		const finalAttachments = defaultAttachment ?
+			attachments.concat(getDefaultAttachments()) : attachments;
+
+		const message = Object.assign({
 			text,
 			channel,
 			username: this.username,
 			attachments: JSON.stringify(finalAttachments),
-		});
+		}, extraProps);
 
 		if (this.logCondition()) {
 			getLogger().info({label: 'Slack', ...message}, 'Slack message');
@@ -331,8 +340,8 @@ class Slack {
 	}
 
 	/**
-	 * @param {string} url 
-	 * @param {string} text 
+	 * @param {string} url
+	 * @param {string} text
 	 */
 	static formatUrl(url, text) {
 		return `<${url}|${text}>`;
@@ -354,7 +363,7 @@ class Slack {
 	}
 
 	/**
-	 * @param {string} webhookUrl 
+	 * @param {string} webhookUrl
 	 */
 	static setWebhook(webhookUrl) {
 		cfg.set('slack.webhook', webhookUrl);

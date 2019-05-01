@@ -82,7 +82,7 @@ declare module '@smpx/slack' {
 		/**
 		 * Add an error as an attachement to the slack message
 		 * Also automatically adds a button to create issue on  github
-		 * if a `bugs.url` property exists in package.json 
+		 * if a `bugs.url` property exists in package.json
 		 */
 		error(err: Error, opts?: {label?: string, title?: string}): this;
 		/**
@@ -90,17 +90,24 @@ declare module '@smpx/slack' {
 		 */
 		icon(linkOrEmoji: string): this;
 		button(text: string, url: string, opts?: {style?: string}): this;
-		send(): Promise<void>;
+		send(opts?: {defaultAttachment?: boolean, extraProps?: object}): Promise<void>;
 
 		static postMessage(text: string, opts?: {
 			channel?: string;
 			attachments?: MessageAttachment[],
+			/**
+			 * Will overwrite properties, use carefully
+			 */
 			extraProps?: object,
+			/**
+			 * default true
+			 */
+			defaultAttachment?: boolean,
 		}): Promise<void>;
 
 		/**
 		 * Format function for message building, default formatting is Bold
-		 * @param text 
+		 * @param text
 		 * @param opts If no options object is provided then bold is set as true
 		 * @returns formatted txt
 		 */
@@ -120,8 +127,7 @@ declare module '@smpx/slack' {
 		static setToken(token: string);
 	}
 
-	// This gives error but works
-	export = Slack;
+	export default Slack;
 }
 
 export {
