@@ -225,6 +225,7 @@ class Slack {
 	async send({defaultAttachment = true, extraProps = {}} = {}) {
 		if (this._actions.length) {
 			this.attachment({
+				title: '',
 				actions: this._actions,
 			});
 		}
