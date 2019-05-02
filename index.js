@@ -176,8 +176,8 @@ class Slack {
 		Object.keys(keyValues).forEach((key) => {
 			let value = keyValues[key];
 
-			if (['boolean', 'number'].includes(typeof value)) value = String(value);
-			else if (typeof value !== 'string') value = JSON.stringify(value);
+			if (['boolean', 'number', 'undefined'].includes(typeof value)) value = String(value);
+			else if (typeof value !== 'string') value = String(JSON.stringify(value));
 			value = value.trim();
 
 			attachment.fields.push({
