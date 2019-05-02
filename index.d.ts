@@ -72,11 +72,12 @@ declare module '@smpx/slack' {
 		attachment(attachments: MessageAttachment | MessageAttachment[]): this;
 		/**
 		 * Add an attachment with stats as fields
+		 * By default: ignores undefined values
 		 */
 		stats(
 			title: string,
 			statsKeyValue: {[statTitle: string]: string | number | boolean | object},
-			extraProps?: Partial<MessageAttachment>
+			opts?: {extraProps?: Partial<MessageAttachment>, ignoreUndefined?: boolean}
 		): this;
 		/**
 		 * Add an error as an attachement to the slack message

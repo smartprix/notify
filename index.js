@@ -162,9 +162,9 @@ class Slack {
 	 * Add an attachment with stats as fields
 	 * @param {string} title
 	 * @param {{[key: string]: string}} keyValues
-	 * @param {Partial<attach>} extraProps
+	 * @param {{extraProps?: Partial<attach>, ignoreUndefined?: boolean}} opts
 	 */
-	stats(title, keyValues, extraProps = {}) {
+	stats(title, keyValues, {extraProps = {}, ignoreUndefined = true} = {}) {
 		/** @type {attach} */
 		const attachment = Object.assign({
 			color: '#439FE0', // blue
@@ -175,6 +175,8 @@ class Slack {
 
 		Object.keys(keyValues).forEach((key) => {
 			let value = keyValues[key];
+
+			if(ignoreUndefined && value === undefined) return;
 
 			if (['boolean', 'number', 'undefined'].includes(typeof value)) value = String(value);
 			else if (typeof value !== 'string') value = String(JSON.stringify(value));
