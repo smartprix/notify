@@ -1,4 +1,4 @@
-declare module '@smpx/slack' {
+declare module '@smpx/notify' {
 	/**
 	 * Taken from @slack/client
 	 */
