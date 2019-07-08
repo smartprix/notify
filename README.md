@@ -1,12 +1,17 @@
-<a href="https://www.npmjs.com/package/@smpx/slack"><img src="https://img.shields.io/npm/v/@smpx/slack.svg" alt="Version"></a>
-<a href="https://www.npmjs.com/package/@smpx/slack"><img src="https://img.shields.io/npm/dm/@smpx/slack.svg" alt="Downloads"></a>
-<a href="https://www.npmjs.com/package/@smpx/slack"><img src="https://img.shields.io/npm/l/@smpx/slack.svg" alt="License"></a>
-<a href="https://david-dm.org/smartprix/slack-utils"><img src="https://david-dm.org/smartprix/slack-utils/status.svg" alt="Dependencies"></a>
-<a href="https://david-dm.org/smartprix/slack-utils?type=dev"><img src="https://david-dm.org/smartprix/slack-utils/dev-status.svg" alt="Dev Dependencies"></a>
+<a href="https://www.npmjs.com/package/@smpx/notify"><img src="https://img.shields.io/npm/v/@smpx/notify.svg" alt="Version"></a>
+<a href="https://www.npmjs.com/package/@smpx/notify"><img src="https://img.shields.io/npm/dm/@smpx/notify.svg" alt="Downloads"></a>
+<a href="https://www.npmjs.com/package/@smpx/notify"><img src="https://img.shields.io/npm/l/@smpx/notify.svg" alt="License"></a>
+<a href="https://david-dm.org/smartprix/notify"><img src="https://david-dm.org/smartprix/notify/status.svg" alt="Dependencies"></a>
+<a href="https://david-dm.org/smartprix/notify?type=dev"><img src="https://david-dm.org/smartprix/notify/dev-status.svg" alt="Dev Dependencies"></a>
 
-# Slack-Utils
+# Notify
 
-It is a set of utility functions for sending messages to Slack
+It is a message builder for sending notifications and alerts.
+
+Currently supports slack.
+
+
+## Slack
 
 Works both with legacy tokens and incoming webhooks.
 
