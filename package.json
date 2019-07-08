@@ -1,27 +1,28 @@
 {
-  "name": "@smpx/slack",
+  "name": "@smpx/notify",
   "version": "0.2.4",
-  "description": "A slack message builder and sender",
+  "description": "A generic notification message builder and sender, supports slack",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/smartprix/slack-utils.git"
+    "url": "git+https://github.com/smartprix/notify.git"
   },
   "keywords": [
     "slack",
     "message",
     "builder",
+    "alerts",
     "notifications"
   ],
   "author": "Rohit Gohri",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/smartprix/slack-utils/issues"
+    "url": "https://github.com/smartprix/notify/issues"
   },
-  "homepage": "https://github.com/smartprix/slack-utils#readme",
+  "homepage": "https://github.com/smartprix/notify#readme",
   "dependencies": {
     "lodash.startcase": "^4.4.0",
     "sm-utils": "^2.17.9"
