@@ -247,8 +247,10 @@ class Slack {
 	 * @param {object} message
 	 */
 	static async _postWithToken(message) {
+		/** @type {import('sm-utils').response | undefined} */
 		let res;
 		try {
+			if (message.attachements) message.attachements = JSON.stringify(message.attachements);
 			const connect = Connect
 				.url('https://slack.com/api/chat.postMessage')
 				.fields(message)
@@ -263,27 +265,29 @@ class Slack {
 			}
 		}
 		catch (err) {
-			getLogger().error(message, res && res.body, err);
+			getLogger().error(message, res && res.statusCode, res && res.body, err);
 		}
 	}
 
 	static async _postWithWebhook(message) {
+		/** @type {import('sm-utils').response | undefined} */
 		let res;
 		try {
 			const connect = Connect
 				.url(getSlackConf().webhook)
-				.fields(message)
+				.contentType('application/json')
+				.body(message)
 				.post();
 
 			res = await connect.fetch();
 
-			const parsedBody = JSON.parse(res.body);
-			if (parsedBody.error) {
-				getLogger().error(message, parsedBody);
+			const body = res.body;
+			if (res.statusCode !== 200) {
+				getLogger().error(message, res.statusCode, body);
 			}
 		}
 		catch (err) {
-			getLogger().error(message, res && res.body, err);
+			getLogger().error(message, res && res.statusCode, res && res.body, err);
 		}
 	}
 
@@ -309,7 +313,7 @@ class Slack {
 			text,
 			channel,
 			username: this.username,
-			attachments: JSON.stringify(finalAttachments),
+			attachments: finalAttachments,
 		}, extraProps);
 
 		if (this.logCondition()) {
