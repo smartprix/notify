@@ -1,6 +1,6 @@
 {
   "name": "@smpx/notify",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "A generic notification message builder and sender, supports slack",
   "main": "index.js",
   "scripts": {
