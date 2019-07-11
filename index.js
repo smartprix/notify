@@ -3,8 +3,8 @@ const {cfg, Connect} = require('sm-utils');
 const startCase = require('lodash.startcase');
 
 /**
- * @typedef {import('@smpx/slack').MessageAttachment} attach
- * @typedef {import('@smpx/slack').AttachmentAction} action
+ * @typedef {import('@smpx/notify').MessageAttachment} attach
+ * @typedef {import('@smpx/notify').AttachmentAction} action
  */
 
 let packageObj;
@@ -247,6 +247,7 @@ class Slack {
 	 * @param {object} message
 	 */
 	static async _postWithToken(message) {
+		let res;
 		try {
 			const connect = Connect
 				.url('https://slack.com/api/chat.postMessage')
@@ -254,7 +255,7 @@ class Slack {
 				.field('token', getSlackConf().token)
 				.post();
 
-			const res = await connect.fetch();
+			res = await connect.fetch();
 
 			const parsedBody = JSON.parse(res.body);
 			if (parsedBody.error) {
@@ -262,25 +263,27 @@ class Slack {
 			}
 		}
 		catch (err) {
-			getLogger().error(message, err);
+			getLogger().error(message, res && res.body, err);
 		}
 	}
 
 	static async _postWithWebhook(message) {
+		let res;
 		try {
 			const connect = Connect
 				.url(getSlackConf().webhook)
 				.fields(message)
 				.post();
 
-			const res = await connect.fetch();
+			res = await connect.fetch();
+
 			const parsedBody = JSON.parse(res.body);
 			if (parsedBody.error) {
 				getLogger().error(message, parsedBody);
 			}
 		}
 		catch (err) {
-			getLogger().error(message, err);
+			getLogger().error(message, res && res.body, err);
 		}
 	}
 
