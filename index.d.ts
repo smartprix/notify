@@ -89,6 +89,7 @@ declare module '@smpx/notify' {
 		 * @param linkOrEmoji Url of image to use as icon or string for emoji
 		 */
 		icon(linkOrEmoji: string): this;
+		username(name: string): this;
 		button(text: string, url: string, opts?: {style?: string}): this;
 		send(opts?: {defaultAttachment?: boolean, extraProps?: object}): Promise<void>;
 

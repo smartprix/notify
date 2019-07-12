@@ -112,6 +112,11 @@ class Slack {
 		return this;
 	}
 
+	username(name) {
+		this._extraProps.username = name;
+		return this;
+	}
+
 	/**
 	 * @param {attach | attach[]} attachments
 	 */
