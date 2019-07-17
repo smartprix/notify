@@ -255,7 +255,7 @@ class Slack {
 		/** @type {import('sm-utils').response | undefined} */
 		let res;
 		try {
-			if (message.attachements) message.attachements = JSON.stringify(message.attachements);
+			if (message.attachments) message.attachments = JSON.stringify(message.attachments);
 			const connect = Connect
 				.url('https://slack.com/api/chat.postMessage')
 				.fields(message)
