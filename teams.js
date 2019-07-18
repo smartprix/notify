@@ -109,6 +109,9 @@ class Teams {
 		return this._defaultChannel || DEFAULT_CHANNEL;
 	}
 
+	username() { return this }
+	icon() { return this }
+
 	/** @param {string} channel */
 	channel(channel) {
 		this._channel = channel;

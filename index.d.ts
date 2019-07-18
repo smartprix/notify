@@ -226,7 +226,9 @@ declare module '@smpx/notify' {
 		/** default channel to use, (default: 'default') */
 		static defaultChannel: string;
 
-		constructor(init?: {text?: string, channel?: string})
+		constructor(init?: {text?: string, channel?: string});
+		username(name: string): this;
+		icon(linkOrEmoji: string): this;
 		channel(channel: string): this;
 		summary(summary: string): this;
 		/** @param color Hex Code */
