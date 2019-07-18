@@ -124,8 +124,163 @@ declare module '@smpx/notify' {
 		 * Webhook is given priority over legacy tokens
 		 * @param webhook
 		 */
-		static setWebhook(webhook: string);
-		static setToken(token: string);
+		static setWebhook(webhook: string): void;
+		static setToken(token: string): void;
+	}
+
+	namespace TeamsTypes {
+		interface Image {
+			/** URL of the image */
+			image?: string;
+			title?: string;
+		}
+
+		interface commonInputFields {
+			id?: string;
+			isRequired?: boolean;
+			title?: string;
+			value?: string;
+		}
+
+		interface TextInput extends commonInputFields {
+			"@type": 'TextInput';
+			isMultiline?: boolean;
+			maxLength?: number;
+		}
+
+		interface DateInput extends commonInputFields {
+			"@type": 'DateInput';
+			includeTime?: boolean;
+		}
+
+		interface MultichoiceInput extends commonInputFields {
+			"@type": 'MultichoiceInput';
+			choices?: Array<{display: string, value: string}>;
+			isMultiSelect?: boolean;
+			style?: 'normal' | 'expanded';
+		}
+
+		/** To use input value `{{<id of input>.value}}` */
+		type Input = TextInput | DateInput | MultichoiceInput;
+
+
+		type OS = 'default' | 'windows' | 'iOS' | 'Android';
+		interface OpenUriAction {
+			"@type": 'OpenUri';
+			name: string;
+			targets: Array<{os: OS, uri: string}>;
+		}
+
+		interface HttpPOSTAction {
+			"@type": 'HttpPOST';
+			name: string;
+			target: string;
+			headers?: Array<{name: string, value: string}>;
+			body: string;
+			/** default: `application/json` */
+			bodyContentType?: string;
+		}
+
+		interface ActionCardAction {
+			"@type": 'ActionCard';
+			name: string;
+			inputs: Input[];
+			actions: Array<OpenUriAction | HttpPOSTAction>;
+		}
+
+		type Action = OpenUriAction | HttpPOSTAction | ActionCardAction;
+
+
+		interface Section {
+			title?: string;
+			/** When set to `true`, the `startGroup` property marks the start of a logical group of information. */
+			startGroup?: boolean;
+			activityImage?: string;
+			activityTitle?: string;
+			activitySubtitle?: string;
+			activityText?: string;
+			/** Use `heroImage` to make an image the centerpiece of your card. */
+			heroImage?: Image;
+			text?: string;
+			facts?: Array<{name: string, value: string}>;
+			images?: Image[];
+			potentialAction?: Action[];
+		}
+
+		interface MessageCard {
+			summary?: string;
+			themeColor?: string;
+			title?: string;
+			text?: string;
+			sections?: Section[];
+			potentialAction?: Action[];
+		}
+	}
+
+	class Teams {
+		/**
+		 * Overwrite this function to skip slack message sending in some cnditions
+		 * and log the message instead. By default skips in test environment
+		 */
+		static logCondition: () => boolean;
+		/** default channel to use, (default: 'default') */
+		static defaultChannel: string;
+
+		constructor(init?: {text?: string, channel?: string})
+		channel(channel: string): this;
+		summary(summary: string): this;
+		/** @param color Hex Code */
+		color(color: string): this;
+		title(title: string): this;
+		text(text: string): this;
+		section(sections: TeamsTypes.Section | TeamsTypes.Section[]): this;
+		action(actions: TeamsTypes.Action | TeamsTypes.Action[]): this;
+		/**
+		 * Add a section with facts
+		 * By default: ignores undefined values
+		 */
+		stats(
+			title: string,
+			statsKeyValue: {[statTitle: string]: string | number | boolean | object},
+			opts?: {ignoreUndefined?: boolean}
+		): this;
+		/**
+		 * Creates an error as MessageCard
+		 * Also automatically adds a button to create issue,
+		 * if a `bugs.url` property exists in package.json
+		 */
+		error(err: Error, opts?: {label?: string, title?: string}): this;
+		/**
+		 * Adds an error as a Section
+		 * Also automatically adds a button to create issue,
+		 * if a `bugs.url` property exists in package.json
+		 */
+		errorSection(err: Error, opts?: {label?: string, title?: string}): this;
+		button(text: string, url: string): this;
+		send(opts?: {defaultAttachment?: boolean}): Promise<void>;
+
+		static postMessage(message: TeamsTypes.MessageCard, opts?: {
+			channel?: string;
+			/** default `true` */
+			defaultAttachment?: boolean,
+		}): Promise<void>;
+
+		/**
+		 * Format function for message building, default formatting is Bold
+		 * @param text
+		 * @param opts If no options object is provided then bold is set as true
+		 * @returns formatted txt
+		 */
+		static format(text: string, opts?: {
+			code?: boolean;
+			bold?: boolean;
+			italics?: boolean;
+			strikethrough?: boolean;
+		}): string;
+
+		static formatUrl(url: string, text: string): string;
+		/** @param channel default: `Teams.defaultChannel` */
+		static setWebhook(webhook: string, channel?: string): void;
 	}
 
 	export default Slack;
@@ -133,6 +288,8 @@ declare module '@smpx/notify' {
 	export {
 		MessageAttachment,
 		AttachmentAction,
+		TeamsTypes,
+		Teams,
 	};
 }
 
