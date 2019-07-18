@@ -40,12 +40,10 @@ function getLogger() {
 }
 
 /** 
- * @param {string} channel `<channelName>[.<webhookName>]`
+ * @param {string} [channel] `<channelName>[.<webhookName>]`
  * @returns {string}
  */
-function getTeamsWebhookUrl(channel) {
-	if (!channel) return null;
-
+function getTeamsWebhookUrl(channel = Teams.defaultChannel) {
 	if (!channel.includes('.')) channel += `.${DEFAULT_WEBHOOK_NAME}`;
 	// @ts-ignore
 	return cfg(`teams.${channel}`);
@@ -334,7 +332,6 @@ class Teams {
 			return;
 		}
 
-		channel = channel || Teams.defaultChannel;
 		const webhookUrl = getTeamsWebhookUrl(channel);
 		if (!webhookUrl) throw new Error(`No webhook url for channel: "${channel}"`)
 
