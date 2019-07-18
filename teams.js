@@ -2,6 +2,9 @@ const os = require('os');
 const {cfg, Connect} = require('sm-utils');
 const startCase = require('lodash.startcase');
 
+const DEFAULT_CHANNEL = 'default';
+const DEFAULT_WEBHOOK_NAME = 'default';
+
 /**
  * @typedef {import('@smpx/notify').TeamsTypes.Section} Section
  * @typedef {import('@smpx/notify').TeamsTypes.Action} Action
@@ -37,20 +40,15 @@ function getLogger() {
 }
 
 /** 
- * @param {string} channel `<channelName>[.<webhookName=default>]`
+ * @param {string} channel `<channelName>[.<webhookName>]`
  * @returns {string}
  */
 function getTeamsWebhookUrl(channel) {
 	if (!channel) return null;
 
-	let webhookName;
-	([channel, webhookName = 'default'] = channel.split('.'));
-
-	const webhookUrl = cfg(`teams.${channel}`);
-
-	if (!webhookUrl) return null;
-	if (typeof webhookUrl === 'string') return webhookUrl;
-	return webhookUrl[webhookName];
+	if (!channel.includes('.')) channel += `.${DEFAULT_WEBHOOK_NAME}`;
+	// @ts-ignore
+	return cfg(`teams.${channel}`);
 }
 
 /**
@@ -110,7 +108,7 @@ class Teams {
 
 	/** @returns {string} */
 	static get defaultChannel() {
-		return this._defaultChannel || 'default';
+		return this._defaultChannel || DEFAULT_CHANNEL;
 	}
 
 	/** @param {string} channel */
@@ -380,6 +378,7 @@ class Teams {
 	 * @param {string} [channel] default: `Teams.defaultChannel`
 	 */
 	static setWebhook(webhookUrl, channel = Teams.defaultChannel) {
+		if (!channel.includes('.')) channel += `.${DEFAULT_WEBHOOK_NAME}`;
 		cfg.set(`teams.${channel}`, webhookUrl);
 	}
 }
