@@ -184,43 +184,6 @@ class Teams {
 	}
 
 	/**
-	 * Add an error as a section
-	 * @param {Error} err
-	 * @param {{label?: string, title?: string}} [param1={}]
-	 */
-	errorSection(err, {label = '', title = ''} = {}) {
-		this._errors.push(err);
-		const {bugs, version} = getPackageInfo();
-		const bugsUrl = bugs && bugs.url;
-
-		/** @type {Section} */
-		const section = {
-			startGroup: true,
-			activityTitle: `${Teams.format('Error')}: ${err.message}`,
-			activityText: err.stack.replace(/\n/g, '\\n\\n').replace(/ /g, '&nbsp;'),
-		};
-
-		if (bugsUrl) {
-			label = `[${label || err.name}] `;
-			section.potentialAction = [{
-				"@type": 'OpenUri',
-				name: 'Create an issue for this error?',
-				targets: [{
-					os: 'default',
-					uri: `${bugsUrl}/new?title=${
-							encodeURIComponent(`${label}${title || err.message}`)
-						}&body=${encodeURIComponent(
-							`Error encountered on ${new Date().toLocaleString()}\n` +
-							`App version: v${version}\n\n` +
-							`Full Stack: ${err.stack}`
-						)}&labels=bug`,
-				}],
-			}];
-		}
-		return this.section(section);
-	}
-
-	/**
 	 * Add a section with facts
 	 * @param {string} title
 	 * @param {{[statTitle: string]: string | number | boolean | object}} keyValues

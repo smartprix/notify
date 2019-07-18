@@ -250,12 +250,6 @@ declare module '@smpx/notify' {
 		 * if a `bugs.url` property exists in package.json
 		 */
 		error(err: Error, opts?: {label?: string, title?: string}): this;
-		/**
-		 * Adds an error as a Section
-		 * Also automatically adds a button to create issue,
-		 * if a `bugs.url` property exists in package.json
-		 */
-		errorSection(err: Error, opts?: {label?: string, title?: string}): this;
 		button(text: string, url: string): this;
 		send(opts?: {defaultAttachment?: boolean}): Promise<void>;
 
