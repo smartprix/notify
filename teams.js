@@ -83,7 +83,9 @@ class Teams {
 		return this._defaultChannel || DEFAULT_CHANNEL;
 	}
 
+	/** Teams does not support username */
 	username() { return this }
+	/** Teams does not support icon */
 	icon() { return this }
 
 	/** @param {string} channel */
