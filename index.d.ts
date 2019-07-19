@@ -237,7 +237,7 @@ declare module '@smpx/notify' {
 		color(color: string): this;
 		title(title: string): this;
 		text(text: string): this;
-		section(sections: TeamsTypes.Section | TeamsTypes.Section[]): this;
+		attachment(sections: TeamsTypes.Section | TeamsTypes.Section[]): this;
 		action(actions: TeamsTypes.Action | TeamsTypes.Action[]): this;
 		/**
 		 * Add a section with facts

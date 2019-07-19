@@ -117,7 +117,7 @@ class Teams {
 	}
 
 	/** @param {Section | Section[]} sections */
-	section(sections) {
+	attachment(sections) {
 		if (!Array.isArray(sections)) sections = [sections];
 		this._sections = this._sections.concat(sections);
 		return this;
@@ -188,7 +188,7 @@ class Teams {
 			});
 		})
 
-		return this.section(section);
+		return this.attachment(section);
 	}
 
 	/**
