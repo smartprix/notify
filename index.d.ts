@@ -66,7 +66,9 @@ declare module '@smpx/notify' {
 		 */
 		static username: string;
 
-		constructor(init?: {text?: string, channel?: string})
+		constructor(init?: {text?: string, channel?: string});
+		/** Sets fallback for the first attachment */
+		summary(fallback: string): this;
 		text(text: string): this;
 		channel(channelName: string): this;
 		attachment(attachments: MessageAttachment | MessageAttachment[]): this;

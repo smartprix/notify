@@ -75,6 +75,15 @@ class Slack {
 		if (text) this.text(text);
 	}
 
+	/**
+	 * Sets fallback for the first attachment
+	 * @param {string} fallback
+	 */
+	summary(fallback) {
+		if (this._attachments.length) this._attachments[0].fallback = fallback;
+		return this;
+	}
+
 	/** @param {string} text */
 	text(text) {
 		this._text = text;
