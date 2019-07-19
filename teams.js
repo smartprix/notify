@@ -26,7 +26,7 @@ function getTeamsWebhookUrl(channel = Teams.defaultChannel) {
 /**
  * @returns {Section[]}
  */
-function getDefaultSections() {
+function getDefaultAttachments() {
 	const {name, version} = getPackageInfo();
 	const facts = [
 		{
@@ -140,14 +140,16 @@ class Teams {
 	/**
 	 * Create a MessageBox
 	 * @param {Error} err
-	 * @param {{label?: string, title?: string}} [this._textaram1={}]
+	 * @param {{label?: string, title?: string}} [param1={}]
 	 */
 	error(err, {label = '', title = ''} = {}) {
 		this._errors.push(err);
-		const {bugs, version} = getPackageInfo();this._text
+		const {bugs, version} = getPackageInfo();
 		const bugsUrl = bugs && bugs.url;
 
 		err.stack = err.stack.replace(/ /g, '&nbsp;');
+		label = `[${label || err.name}] `;
+
 		this.color('F00'); // Red
 		this.title(`Error: ${err.message}`);
 		this.text(err.stack);
@@ -217,9 +219,9 @@ class Teams {
 	}
 
 	/**
-	 * @param {{defaultSection?: boolean}} opts
+	 * @param {{defaultAttachment?: boolean}} opts
 	 */
-	async send({defaultSection = true} = {}) {
+	async send({defaultAttachment = true} = {}) {
 		if (!this._summary && !this._text) throw new Error('Either summary or text is required');
 
 		/** @type {MessageCard} */
@@ -232,7 +234,7 @@ class Teams {
 			potentialAction: this._actions,
 		}
 
-		return Teams.postMessage(message, {channel: this._channel, defaultSection});
+		return Teams.postMessage(message, {channel: this._channel, defaultAttachment});
 	}
 
 	/** 
@@ -266,14 +268,14 @@ class Teams {
 	 * @param {MessageCard} message 
 	 * @param {object} [opts]
 	 * @param {string} [opts.channel]
-	 * @param {boolean} [opts.defaultSection=true]
+	 * @param {boolean} [opts.defaultAttachment=true]
 	 */
-	static async postMessage(message, {channel, defaultSection = true} = {}) {
+	static async postMessage(message, {channel, defaultAttachment = true} = {}) {
 		// Do not modify original message;
 		message = Object.assign({}, message);
 
 		message.sections = message.sections || [];
-		if (defaultSection) message.sections = message.sections.concat(getDefaultSections());
+		if (defaultAttachment) message.sections = message.sections.concat(getDefaultAttachments());
 
 		if (this.logCondition()) {
 			getLogger().info({label: 'Teams', ...message}, 'Teams message');
