@@ -72,6 +72,7 @@ declare module '@smpx/notify' {
 		text(text: string): this;
 		channel(channelName: string): this;
 		attachment(attachments: MessageAttachment | MessageAttachment[]): this;
+		action(actions: AttachmentAction | AttachmentAction[]): this;
 		/**
 		 * Add an attachment with stats as fields
 		 * By default: ignores undefined values

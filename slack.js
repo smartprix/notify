@@ -109,6 +109,13 @@ class Slack {
 		return this;
 	}
 
+	/** @param {action | action[]} actions */
+	action(actions) {
+		if (!Array.isArray(actions)) actions = [actions];
+		this._actions = this._actions.concat(actions);
+		return this;
+	}
+
 	/**
 	 * Add an error as an attachement to the slack message
 	 * @param {Error} err
