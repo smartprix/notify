@@ -60,7 +60,12 @@ class Slack {
 	 * Username to send message with, default: 'slackbot'
 	 */
 	static get username() {
-		return 'slackbot';
+		return this._username || 'slackbot';
+	}
+
+	/** @param {string} username */
+	static set username(username) {
+		this._username = username;
 	}
 
 	constructor({text = '', channel = ''} = {}) {
