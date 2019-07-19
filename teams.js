@@ -115,13 +115,17 @@ class Teams {
 
 	/** @param {string} text */
 	text(text) {
-		this._text = text;
+		this._text = text.replace(/\n/g, '\n\n&nbsp;');
 		return this;
 	}
 
 	/** @param {Section | Section[]} sections */
 	attachment(sections) {
 		if (!Array.isArray(sections)) sections = [sections];
+		sections = sections.map((section) => {
+			if (section.text) section.text = section.text.replace(/\n/g, '\n\n&nbsp;');
+			return section;
+		});
 		this._sections = this._sections.concat(sections);
 		return this;
 	}
@@ -143,9 +147,10 @@ class Teams {
 		const {bugs, version} = getPackageInfo();this._text
 		const bugsUrl = bugs && bugs.url;
 
+		err.stack = err.stack.replace(/ /g, '&nbsp;');
 		this.color('F00'); // Red
 		this.title(`Error: ${err.message}`);
-		this.text(err.stack.replace(/\n/g, '\\n\\n').replace(/ /g, '&nbsp;'));
+		this.text(err.stack);
 		this.action({
 			"@type": 'OpenUri',
 			name: 'Create an issue for this error?',
