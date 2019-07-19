@@ -287,6 +287,7 @@ declare module '@smpx/notify' {
 	export {
 		MessageAttachment,
 		AttachmentAction,
+		Slack,
 		TeamsTypes,
 		Teams,
 	};
