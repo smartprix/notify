@@ -60,7 +60,8 @@ class Teams {
 		return cfg.isTest();
 	}
 
-	constructor({text = '', channel = ''} = {}) {
+	/** @param {{text?: string, channel?: string}} opts */
+	constructor({text, channel} = {}) {
 		this._themeColor = '439FE0'; // blue
 		/** @type {Section[]} */
 		this._sections = [];

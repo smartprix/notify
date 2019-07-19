@@ -68,9 +68,11 @@ class Slack {
 		this._username = username;
 	}
 
-	constructor({text = '', channel = ''} = {}) {
+	/** @param {{text?: string, channel?: string}} opts */
+	constructor({text, channel} = {}) {
 		/** @type {attach[]} */
 		this._attachments = [];
+		/** @type {Error[]} */
 		this._errors = [];
 		/** @type {action[]} */
 		this._actions = [];
