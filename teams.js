@@ -164,20 +164,16 @@ class Teams {
 		this.color('F00'); // Red
 		this.title(`Error: ${err.message}`);
 		this.text(err.stack);
-		this.action({
-			"@type": 'OpenUri',
-			name: 'Create an issue for this error?',
-			targets: [{
-				os: 'default',
-				uri: `${bugsUrl}/new?title=${
-						encodeURIComponent(`${label}${title || err.message}`)
-					}&body=${encodeURIComponent(
-						`Error encountered on ${new Date().toLocaleString()}\n` +
-						`App version: v${version}\n\n` +
-						`Full Stack: ${err.stack}`
-					)}&labels=bug`,
-			}],
-		});
+		this.button(
+			'Create an issue for this error?',
+			`${bugsUrl}/new?title=${
+				encodeURIComponent(`${label}${title || err.message}`)
+			}&body=${encodeURIComponent(
+				`Error encountered on ${new Date().toLocaleString()}\n` +
+				`App version: v${version}\n\n` +
+				`Full Stack: ${err.stack}`
+			)}&labels=bug`
+		);
 		return this;
 	}
 
