@@ -51,6 +51,17 @@ function getDefaultAttachments() {
 	}];
 }
 
+/** @param {string} text */
+function replaceLineBreaks(text) {
+	if (!text) return text;
+	return text.replace(/(\n*)/g, (_, lineBreaks) => {
+		if (!lineBreaks.length) return lineBreaks;
+		let ret = '';
+		for (let i = 0; i < lineBreaks.length - 1; i++) ret += '\n\n&nbsp;';
+		return ret + '\n\n';
+	});
+}
+
 class Teams {
 	/**
 	 * Overwrite this function to skip teams message sending in some cnditions
@@ -115,7 +126,7 @@ class Teams {
 
 	/** @param {string} text */
 	text(text) {
-		this._text = text.replace(/\n/g, '\n\n&nbsp;');
+		this._text = replaceLineBreaks(text);
 		return this;
 	}
 
@@ -123,7 +134,7 @@ class Teams {
 	attachment(sections) {
 		if (!Array.isArray(sections)) sections = [sections];
 		sections = sections.map((section) => {
-			if (section.text) section.text = section.text.replace(/\n/g, '\n\n&nbsp;');
+			if (section.text) section.text = replaceLineBreaks(section.text);
 			return section;
 		});
 		this._sections = this._sections.concat(sections);
@@ -190,7 +201,7 @@ class Teams {
 
 			if (['boolean', 'number', 'undefined'].includes(typeof value)) value = String(value);
 			else if (typeof value !== 'string') value = String(JSON.stringify(value));
-			value = value.trim().replace(/\n/g, '\\n\\n').replace(/ /g, '&nbsp;');
+			value = replaceLineBreaks(value.trim());
 
 			section.facts.push({
 				name: startCase(key.trim()),
