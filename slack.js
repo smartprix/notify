@@ -2,38 +2,12 @@ const os = require('os');
 const {cfg, Connect} = require('sm-utils');
 const startCase = require('lodash.startcase');
 
+const {getPackageInfo, getLogger} = require('./helpers');
+
 /**
  * @typedef {import('@smpx/notify').MessageAttachment} attach
  * @typedef {import('@smpx/notify').AttachmentAction} action
  */
-
-let packageObj;
-function getPackageInfo() {
-	if (packageObj) return packageObj;
-	try {
-		packageObj = require(`${process.cwd()}/package.json`);
-	}
-	catch(err) {
-		packageObj = {name: 'Unknown', version: '0.0.0'};
-	}
-	return packageObj;
-}
-
-/** @type {Console} */
-let logger;
-function getLogger() {
-	if (logger) return logger;
-	try {
-		// Try using oak
-		// @ts-ignore
-		const {Oak} = require('@smpx/oak');
-		logger = new Oak('Slack');
-	}
-	catch (err) {
-		logger = console;
-	}
-	return logger;
-}
 
 function getSlackConf() {
 	return cfg('slack', {

@@ -2,6 +2,8 @@ const os = require('os');
 const {cfg, Connect} = require('sm-utils');
 const startCase = require('lodash.startcase');
 
+const {getPackageInfo, getLogger} = require('./helpers');
+
 const DEFAULT_CHANNEL = 'default';
 const DEFAULT_WEBHOOK_NAME = 'default';
 
@@ -10,34 +12,6 @@ const DEFAULT_WEBHOOK_NAME = 'default';
  * @typedef {import('@smpx/notify').TeamsTypes.Action} Action
  * @typedef {import('@smpx/notify').TeamsTypes.MessageCard} MessageCard
  */
-
-let packageObj;
-function getPackageInfo() {
-	if (packageObj) return packageObj;
-	try {
-		packageObj = require(`${process.cwd()}/package.json`);
-	}
-	catch(err) {
-		packageObj = {name: 'Unknown', version: '0.0.0'};
-	}
-	return packageObj;
-}
-
-/** @type {Console} */
-let logger;
-function getLogger() {
-	if (logger) return logger;
-	try {
-		// Try using oak
-		// @ts-ignore
-		const {Oak} = require('@smpx/oak');
-		logger = new Oak('Slack');
-	}
-	catch (err) {
-		logger = console;
-	}
-	return logger;
-}
 
 /** 
  * @param {string} [channel] `<channelName>[.<webhookName>]`
