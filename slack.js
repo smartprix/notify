@@ -82,6 +82,11 @@ class Slack {
 		if (text) this.text(text);
 	}
 
+	/** [Dummy] Slack does not support color */
+	color() { return this }
+	/** [Dummy] Slack does not support title */
+	title() { return this }
+
 	/**
 	 * Sets fallback for the first attachment
 	 * @param {string} fallback

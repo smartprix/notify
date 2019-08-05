@@ -95,9 +95,9 @@ class Teams {
 		return this._defaultChannel || DEFAULT_CHANNEL;
 	}
 
-	/** Teams does not support username */
+	/** [Dummy] Teams does not support username */
 	username() { return this }
-	/** Teams does not support icon */
+	/** [Dummy] Teams does not support icon */
 	icon() { return this }
 
 	/** @param {string} channel */
@@ -335,6 +335,9 @@ class Teams {
 		if (!channel.includes('.')) channel += `.${DEFAULT_WEBHOOK_NAME}`;
 		cfg.set(`teams.${channel}`, webhookUrl);
 	}
+
+	/** [Dummy] */
+	static setToken() {}
 }
 
 module.exports = Teams;
