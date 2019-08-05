@@ -51,17 +51,6 @@ function getDefaultAttachments() {
 	}];
 }
 
-/** @param {string} text */
-function replaceLineBreaks(text) {
-	if (!text) return text;
-	return text.replace(/(\n*)/g, (_, lineBreaks) => {
-		if (!lineBreaks.length) return lineBreaks;
-		let ret = '';
-		for (let i = 0; i < lineBreaks.length - 1; i++) ret += '\n\n&nbsp;';
-		return ret + '\n\n';
-	});
-}
-
 class Teams {
 	/**
 	 * Overwrite this function to skip teams message sending in some cnditions
@@ -126,7 +115,7 @@ class Teams {
 
 	/** @param {string} text */
 	text(text) {
-		this._text = replaceLineBreaks(text);
+		this._text = Teams.escapeText(text);
 		return this;
 	}
 
@@ -134,7 +123,7 @@ class Teams {
 	attachment(sections) {
 		if (!Array.isArray(sections)) sections = [sections];
 		sections = sections.map((section) => {
-			if (section.text) section.text = replaceLineBreaks(section.text);
+			if (section.text) section.text = Teams.escapeText(section.text);
 			return section;
 		});
 		this._sections = this._sections.concat(sections);
@@ -197,7 +186,7 @@ class Teams {
 
 			if (['boolean', 'number', 'undefined'].includes(typeof value)) value = String(value);
 			else if (typeof value !== 'string') value = String(JSON.stringify(value));
-			value = replaceLineBreaks(value.trim());
+			value = Teams.escapeText(value.trim());
 
 			section.facts.push({
 				name: startCase(key.trim()),
@@ -325,6 +314,21 @@ class Teams {
 	 */
 	static formatUrl(url, text) {
 		return `[${text}](${url})`;
+	}
+
+	/**
+	 * Replace `\n` with `3 spaces + \n`
+	 * @see https://stackoverflow.com/questions/52637567/how-to-insert-newline-into-ms-teams-markdown
+	 * @param {string} text
+	 */
+	static escapeText(text) {
+		if (!text) return text;
+		return text.replace(/(\n*)/g, (_, lineBreaks) => {
+			if (!lineBreaks.length) return lineBreaks;
+			let ret = '';
+			for (let i = 0; i < lineBreaks.length - 1; i++) ret += '   \n&nbsp;';
+			return ret + '   \n';
+		});
 	}
 
 	/**
