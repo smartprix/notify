@@ -25,6 +25,6 @@
   "homepage": "https://github.com/smartprix/notify#readme",
   "dependencies": {
     "lodash": "^4.17.15",
-    "sm-utils": "^2.17.22"
+    "sm-utils": "^2.17.23"
   }
 }
