@@ -1,7 +1,8 @@
 const os = require('os');
 const {cfg, Connect} = require('sm-utils');
-const startCase = require('lodash.startcase');
+const startCase = require('lodash/startCase');
 
+const Notify = require('./Notify');
 const {getPackageInfo, getLogger} = require('./helpers');
 
 /**
@@ -9,12 +10,15 @@ const {getPackageInfo, getLogger} = require('./helpers');
  * @typedef {import('@smpx/notify').AttachmentAction} action
  */
 
+const defaultConfig = {
+	token: '',
+	webhook: '',
+	channel: '#general',
+	username: 'slackbot',
+};
+
 function getSlackConf() {
-	return cfg('slack', {
-		token: '',
-		webhook: '',
-		channel: '',
-	});
+	return cfg('slack') || defaultConfig;
 }
 
 /**
@@ -48,19 +52,20 @@ function getDefaultAttachments() {
 	}];
 }
 
-class Slack {
+class Slack extends Notify {
 	/**
-	 * Overwrite this function to skip slack message sending in some cnditions
+	 * Overwrite this function to skip slack message sending in some conditions
 	 * and log the message instead. By default skips in test environment
 	 */
 	static logCondition() {
 		return cfg.isTest();
 	}
+
 	/**
 	 * Username to send message with, default: 'slackbot'
 	 */
 	static get username() {
-		return this._username || 'slackbot';
+		return this._username || getSlackConf().username || 'slackbot';
 	}
 
 	/** @param {string} username */
@@ -70,6 +75,8 @@ class Slack {
 
 	/** @param {{text?: string, channel?: string}} opts */
 	constructor({text, channel} = {}) {
+		super();
+
 		/** @type {attach[]} */
 		this._attachments = [];
 		/** @type {Error[]} */
@@ -250,55 +257,6 @@ class Slack {
 	}
 
 	/**
-	 * @private
-	 * @param {object} message
-	 */
-	static async _postWithToken(message) {
-		/** @type {import('sm-utils').response | undefined} */
-		let res;
-		try {
-			if (message.attachments) message.attachments = JSON.stringify(message.attachments);
-			const connect = Connect
-				.url('https://slack.com/api/chat.postMessage')
-				.fields(message)
-				.field('token', getSlackConf().token)
-				.post();
-
-			res = await connect.fetch();
-
-			const parsedBody = JSON.parse(res.body);
-			if (parsedBody.error) {
-				getLogger().error(message, parsedBody);
-			}
-		}
-		catch (err) {
-			getLogger().error(message, res && res.statusCode, res && res.body, err);
-		}
-	}
-
-	static async _postWithWebhook(message) {
-		/** @type {import('sm-utils').response | undefined} */
-		let res;
-		try {
-			const connect = Connect
-				.url(getSlackConf().webhook)
-				.contentType('application/json')
-				.body(message)
-				.post();
-
-			res = await connect.fetch();
-
-			const body = res.body;
-			if (res.statusCode !== 200) {
-				getLogger().error(message, res.statusCode, body);
-			}
-		}
-		catch (err) {
-			getLogger().error(message, res && res.statusCode, res && res.body, err);
-		}
-	}
-
-	/**
 	 * Send slack message to one of smartprix's channels
 	 * @param {string} text
 	 * @param {object} [param1={}]
@@ -328,32 +286,11 @@ class Slack {
 			return;
 		}
 
-		if (getSlackConf().webhook) return this._postWithWebhook(message);
-		return this._postWithToken(message);
-	}
+		const webhook = getSlackConf().webhook;
+		if (webhook) return this._postMessage(webhook, message);
 
-	/**
-	 * Format function for message building, default formatting is Bold
-	 * @param {string} txt
-	 * @param {object} [param1={bold: true}] If no options object is provided then bold is set as true
-	 * @param {boolean} [param1.bold=false]
-	 * @param {boolean} [param1.code=false]
-	 * @param {boolean} [param1.italics=false]
-	 * @param {boolean} [param1.strikethrough=false]
-	 * @returns {string} formatted txt
-	 */
-	static format(txt, {
-		code = false,
-		bold = false,
-		italics = false,
-		strikethrough = false,
-	} = {bold: true}
-	) {
-		if (code) txt = `\`${txt}\``;
-		if (bold) txt = `*${txt}*`;
-		if (italics) txt = `_${txt}_`;
-		if (strikethrough) txt = `~${txt}~`;
-		return txt;
+		message.token = getSlackConf().token;
+		return this._postMessage('https://slack.com/api/chat.postMessage', message);
 	}
 
 	/**

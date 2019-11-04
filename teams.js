@@ -1,7 +1,8 @@
 const os = require('os');
 const {cfg, Connect} = require('sm-utils');
-const startCase = require('lodash.startcase');
+const startCase = require('lodash/startCase');
 
+const Notify = require('./Notify');
 const {getPackageInfo, getLogger} = require('./helpers');
 
 const DEFAULT_CHANNEL = 'default';
@@ -51,7 +52,7 @@ function getDefaultAttachments() {
 	}];
 }
 
-class Teams {
+class Teams extends Notify {
 	/**
 	 * Overwrite this function to skip teams message sending in some cnditions
 	 * and log the message instead. By default skips in test environment
@@ -62,6 +63,8 @@ class Teams {
 
 	/** @param {{text?: string, channel?: string}} opts */
 	constructor({text, channel} = {}) {
+		super();
+
 		this._themeColor = '439FE0'; // blue
 		/** @type {Section[]} */
 		this._sections = [];
@@ -233,33 +236,6 @@ class Teams {
 		return Teams.postMessage(message, {channel: this._channel, defaultAttachment});
 	}
 
-	/** 
-	 * @private
-	 * @param {string} webhookUrl
-	 * @param {MessageCard} message
-	 */
-	static async _postWithWebhook(webhookUrl, message) {
-		/** @type {import('sm-utils').response | undefined} */
-		let res;
-		try {
-			const connect = Connect
-				.url(webhookUrl)
-				.contentType('application/json')
-				.body(message)
-				.post();
-
-			res = await connect.fetch();
-
-			const body = res.body;
-			if (res.statusCode !== 200) {
-				getLogger().error(message, res.statusCode, body);
-			}
-		}
-		catch (err) {
-			getLogger().error(message, res && res.statusCode, res && res.body, err);
-		}
-	}
-
 	/**
 	 * @param {MessageCard} message 
 	 * @param {object} [opts]
@@ -281,31 +257,19 @@ class Teams {
 		const webhookUrl = getTeamsWebhookUrl(channel);
 		if (!webhookUrl) throw new Error(`No webhook url for channel: "${channel}"`)
 
-		return this._postWithWebhook(webhookUrl, message);
+		return this._postMessage(webhookUrl, message);
 	}
 
-	/**
-	 * Format function for message building, default formatting is Bold
-	 * @param {string} txt
-	 * @param {object} [opts={bold: true}] If no options object is provided then bold is set as true
-	 * @param {boolean} [opts.bold=false]
-	 * @param {boolean} [opts.code=false]
-	 * @param {boolean} [opts.italics=false]
-	 * @param {boolean} [opts.strikethrough=false]
-	 * @returns {string} formatted txt
-	 */
-	static format(txt, {
-		code = false,
-		bold = false,
-		italics = false,
-		strikethrough = false,
-	} = {bold: true}
-	) {
-		if (code) txt = `\`${txt}\``;
-		if (bold) txt = `**${txt}**`;
-		if (italics) txt = `*${txt}*`;
-		if (strikethrough) txt = `~~${txt}~~`;
-		return txt;
+	static bold(txt) {
+		return `**${txt}**`;
+	}
+
+	static italics(txt) {
+		return `*${txt}*`;
+	}
+
+	static strikethrough(txt) {
+		return `~~${txt}~~`;
 	}
 
 	/**
