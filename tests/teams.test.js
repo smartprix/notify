@@ -43,7 +43,7 @@ new Teams({channel: 'test'})
 		activityTitle: Teams.formatUrl('url', 'user'),
 		text:
 		`Good job ${Teams.formatUrl('url', 'user')}!\n\n` +
-		`Build ${Teams.formatUrl('build_url', 'build')} on branch ${Teams.formatUrl('branch_url', Teams.format('branch', {code: true}))}`,
+		`Build ${Teams.formatUrl('build_url', 'build')} on branch ${Teams.formatUrl('branch_url', Teams.format('branch', {pre: true}))}`,
 	})
 	.button('Test Report', 'report_url')
 	.button('Coverate Report', 'report_url')

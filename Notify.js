@@ -25,18 +25,20 @@ class Notify {
 	 * @param {object} [param1={bold: true}] If no options object is provided then bold is set as true
 	 * @param {boolean} [param1.bold=false]
 	 * @param {boolean} [param1.pre=false]
+	 * @param {boolean} [param1.code=false]
 	 * @param {boolean} [param1.italics=false]
 	 * @param {boolean} [param1.strikethrough=false]
 	 * @returns {string} formatted txt
 	 */
 	static format(txt, {
+		code = false,
 		pre = false,
 		bold = false,
 		italics = false,
 		strikethrough = false,
 	} = {bold: true}
 	) {
-		if (pre) txt = this.pre(txt);
+		if (pre || code) txt = this.pre(txt);
 		if (bold) txt = this.bold(txt);
 		if (italics) this.italics(txt);
 		if (strikethrough) this.strikethrough(txt);
