@@ -55,7 +55,35 @@ declare module '@smpx/notify' {
 		text: string;
 		title?: string;
 	}
-	class Slack {
+
+	class Notify {
+		static bold(text: string): string;
+		static italics(text: string): string;
+		static pre(text: string): string;
+		static strikeThrough(text: string): string;
+
+		/**
+		 * Format function for message building, default formatting is Bold
+		 * @param text
+		 * @param opts If no options object is provided then bold is set as true
+		 * @returns formatted txt
+		 */
+		static format(text: string, opts?: {
+			pre?: boolean,
+			code?: boolean;
+			bold?: boolean;
+			italics?: boolean;
+			strikethrough?: boolean;
+		}): string;
+
+		static formatUrl(url: string, text: string): string;
+		/**
+		 * Webhook is given priority over legacy tokens
+		 * @param webhook
+		 */
+	}
+
+	class Slack extends Notify {
 		/**
 		 * Overwrite this function to skip slack message sending in some cnditions
 		 * and log the message instead. By default skips in test environment
@@ -109,20 +137,6 @@ declare module '@smpx/notify' {
 			defaultAttachment?: boolean,
 		}): Promise<void>;
 
-		/**
-		 * Format function for message building, default formatting is Bold
-		 * @param text
-		 * @param opts If no options object is provided then bold is set as true
-		 * @returns formatted txt
-		 */
-		static format(text: string, opts?: {
-			code?: boolean;
-			bold?: boolean;
-			italics?: boolean;
-			strikethrough?: boolean;
-		}): string;
-
-		static formatUrl(url: string, text: string): string;
 		/**
 		 * Webhook is given priority over legacy tokens
 		 * @param webhook
@@ -220,7 +234,7 @@ declare module '@smpx/notify' {
 		}
 	}
 
-	class Teams {
+	class Teams extends Notify {
 		/**
 		 * Overwrite this function to skip slack message sending in some cnditions
 		 * and log the message instead. By default skips in test environment
@@ -264,20 +278,6 @@ declare module '@smpx/notify' {
 			defaultAttachment?: boolean,
 		}): Promise<void>;
 
-		/**
-		 * Format function for message building, default formatting is Bold
-		 * @param text
-		 * @param opts If no options object is provided then bold is set as true
-		 * @returns formatted txt
-		 */
-		static format(text: string, opts?: {
-			code?: boolean;
-			bold?: boolean;
-			italics?: boolean;
-			strikethrough?: boolean;
-		}): string;
-
-		static formatUrl(url: string, text: string): string;
 		/** @param channel default: `Teams.defaultChannel` */
 		static setWebhook(webhook: string, channel?: string): void;
 	}

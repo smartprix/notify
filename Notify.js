@@ -3,19 +3,35 @@ const {Connect} = require('sm-utils');
 const {getLogger} = require('./helpers');
 
 class Notify {
+	/**
+	 * @param {string} txt 
+	 * @returns {string}
+	 */
 	static bold(txt) {
 		return `*${txt}*`;
 	}
 
+	/**
+	 * @param {string} txt 
+	 * @returns {string}
+	 */
 	static italics(txt) {
 		return `_${txt}_`;
 	}
 
+	/**
+	 * @param {string} txt 
+	 * @returns {string}
+	 */
 	static pre(txt) {
 		return `\`${txt}\``;
 	}
 
-	static strikethrough(txt) {
+	/**
+	 * @param {string} txt 
+	 * @returns {string}
+	 */
+	static strikeThrough(txt) {
 		return `~${txt}~`;
 	}
 
@@ -41,8 +57,17 @@ class Notify {
 		if (pre || code) txt = this.pre(txt);
 		if (bold) txt = this.bold(txt);
 		if (italics) this.italics(txt);
-		if (strikethrough) this.strikethrough(txt);
+		if (strikethrough) this.strikeThrough(txt);
 		return txt;
+	}
+
+	/**
+	 * @param {string} url
+	 * @param {string} text
+	 * @returns {string}
+	 */
+	static formatUrl(url, text) {
+		return `[${text}](${url})`;
 	}
 
 	static async _postMessage(url, message) {
