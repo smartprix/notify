@@ -289,8 +289,11 @@ class Slack extends Notify {
 		const webhook = getSlackConf().webhook;
 		if (webhook) return this._postMessage(webhook, message);
 
-		message.token = getSlackConf().token;
-		return this._postMessage('https://slack.com/api/chat.postMessage', message);
+		return this._postMessage(
+			'https://slack.com/api/chat.postMessage', 
+			message, 
+			{token: getSlackConf().token},
+		);
 	}
 
 	/**

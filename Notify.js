@@ -70,14 +70,18 @@ class Notify {
 		return `[${text}](${url})`;
 	}
 
-	static async _postMessage(url, message) {
+	static async _postMessage(url, message, opts = {}) {
 		try {
-			const res = await Connect
+			const connect = Connect
 				.url(url)
-				.contentType('application/json')
+				.contentType('application/json;charset=utf-8')
 				.body(message)
 				.post();
 
+			if (opts.token) connect.bearerToken(opts.token);
+			if (opts.headers) connect.headers(opts.headers);
+
+			const res = await connect;
 			const body = res.body;
 			if (res.statusCode !== 200) {
 				getLogger().error(message, res.statusCode, body);
